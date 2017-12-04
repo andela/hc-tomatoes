@@ -6,17 +6,89 @@
 <div class="container">
     <div class="row">
     <div class="col-sm-12">
-        <h1 id="pitch">Cron Monitoring. Get Notified When Your Cron Jobs Fail.</h1>
+        <h1 id="pitch" class="text-success">Cron Monitoring system.</h1>
     </div>
     </div>
 
     <div class="row">
     <div class="col-sm-6 col-sm-push-6">
-        <p id="pitch-text">Make a HTTP GET request to this address from your cron job, daemon, script or long running task.
-        <strong>When this address is not requested for a set time period, you will get alerted.</strong> Below are snippets that are ready to be copy/pasted into your own scripts.</p>
+        <h3 class="text-primary">Get Notifications</h3>
+       <p class="pitch-text">
+           Receive alerts when your jobs fail and see history and performance trends over by integrating the system with
+        apps such as:
+        <ul>
+            <li>Email</li>
+            <li>Slack</li>
+            <li>Webhook</li>
+        </ul>
+        <strong>Once logged in, the user is able to view the following states</strong>
+        </p>
+        <table class="table">
+    <tbody><tr>
+        <td>
+            <span class="status icon-up new"></span>
+        </td>
+        <td>
+            <strong>New.</strong>
+            A check that has been created, but has not received any pings yet.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="status icon-paused"></span>
+        </td>
+        <td>
+            <strong>Monitoring Paused.</strong>
+            You can resume monitoring of a paused check by pinging it.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="status icon-up"></span>
+        </td>
+        <td>
+            <strong>Up.</strong>
+            Time since last ping has not exceeded <strong>Period</strong>.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="status icon-grace"></span>
+        </td>
+        <td>
+            <strong>Late.</strong>
+            Time since last ping has exceeded <strong>Period</strong>,
+            but has not yet exceeded <strong>Period</strong> + <strong>Grace</strong>.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="status icon-down"></span>
+        </td>
+        <td>
+            <strong>Down.</strong>
+            Time since last ping has exceeded <strong>Period</strong> + <strong>Grace</strong>.
+            When check goes from "Late" to "Down", healthchecks.io
+            sends you an alert.
+        </td>
+    </tr>
+</tbody></table>
+
+
     </div>
     <div class="col-sm-6 col-sm-pull-6">
-        <h2 id="pitch-subtitle">Here's an unique ping address for you:</h2>
+        <h3 class="text-primary">Get Started</h3>
+        <p class="pitch-text">
+            Healthchecks allows you to monitor your scheduled tasks using a unique 'ping' URL. The system provides you
+            with a better way of allocating different timeouts to tasks. To use the system:
+        <ul>
+            <li>Log in using valid email address</li>
+            <li>Follow the link sent on your email to access the dashboard</li>
+            <li>Create a task using ping command <br/>(<i>you can be able to set timeouts for the next ping
+            </i>)</li>
+        </ul>
+            Below is an example of a unique ping address:
+        </p>
         <div id="pitch-url">
             <input
                 id="pitch-url-input"
@@ -25,11 +97,39 @@
                 value="{{ ping_url }}"
                 readonly />
         </div>
-    </div>
+
+            <p>To create or schedule a task, provide a valid email address </p>
+            <form action="{% url 'hc-login' %}" method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <div class="input-group-addon">@</div>
+                        <input
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            autocomplete="email"
+                            placeholder="Email">
+                    </div>
+                </div>
+
+                <div class="clearfix">
+                    <button type="submit" class="btn btn-lg btn-primary pull-right">
+                        Send Link
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
     </div>
 
 
     <div class="row">
+        <p>
+            Execute a ping request using the following commands
+        </p>
         <div class="col-sm-12">
             <ul class="nav nav-tabs" role="tablist">
                 <li class="active">
@@ -94,39 +194,6 @@
     </div>
 </div>
 </div>
-
-<div class="get-started-bleed">
-<div class="container">
-    <div class="row">
-        <div id="get-started" class="col-sm-6 col-sm-offset-3">
-            <h2>E-mail Address to Receive Alerts:</h2>
-            <form action="{% url 'hc-login' %}" method="post">
-                {% csrf_token %}
-
-                <div class="form-group">
-                    <div class="input-group input-group-lg">
-                        <div class="input-group-addon">@</div>
-                        <input
-                            type="email"
-                            class="form-control"
-                            name="email"
-                            autocomplete="email"
-                            placeholder="Email">
-                    </div>
-                </div>
-
-                <div class="clearfix">
-                    <button type="submit" class="btn btn-lg btn-primary pull-right">
-                        Get Started
-                    </button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-</div>
-</div>
-
 <div class="container">
     <div class="row">
     <div class="col-sm-12">
