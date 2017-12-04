@@ -1,30 +1,30 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% load compress staticfiles %}
 
-{% block title %}My Checks - healthchecks.io{% endblock %}
+{% block title %}My Checks - healthchecks.io{% endblock %} 
 
 
 {% block content %}
 <div class="row">
     <div class="col-sm-12">
         <h1>
-        {% if request.team == request.user.profile %}
-            My Checks
-        {% else %}
-            {{ request.team.team_name }}
-        {% endif %}
+            {% if request.team == request.user.profile %} 
+                My Checks 
+            {% else %} 
+                {{ request.team.team_name }} 
+            {% endif %}
         </h1>
     </div>
     {% if tags %}
     <div id="my-checks-tags" class="col-sm-12">
-        {% for tag, count in tags %}
+        {% for tag, count in tags %} 
             {% if tag in down_tags %}
-                <button class="btn btn-danger btn-xs" data-toggle="button">{{ tag }}</button>
-            {% elif tag in grace_tags %}
-                <button class="btn btn-warning btn-xs" data-toggle="button">{{ tag }}</button>
-            {% else %}
-                <button class="btn btn-default btn-xs" data-toggle="button">{{ tag }}</button>
-            {% endif %}
+        <button class="btn btn-danger btn-xs" data-toggle="button">{{ tag }}</button>
+        {% elif tag in grace_tags %}
+        <button class="btn btn-warning btn-xs" data-toggle="button">{{ tag }}</button>
+        {% else %}
+        <button class="btn btn-default btn-xs" data-toggle="button">{{ tag }}</button>
+        {% endif %} 
         {% endfor %}
     </div>
     {% endif %}
@@ -34,12 +34,12 @@
     <div class="col-sm-12">
 
 
-    {% if checks %}
-        {% include "front/my_checks_mobile.html" %}
-        {% include "front/my_checks_desktop.html" %}
-    {% else %}
-    <div class="alert alert-info">You don't have any checks yet.</div>
-    {% endif %}
+        {% if checks %} 
+        {% include "front/my_checks_mobile.html" %} 
+        {% include "front/my_checks_desktop.html" %} 
+        {% else %}
+        <div class="alert alert-info">You don't have any checks yet.</div>
+        {% endif %}
     </div>
 </div>
 <div class="row">
@@ -61,45 +61,31 @@
                     <h4 class="update-timeout-title">Name and Tags</h4>
                 </div>
                 <div class="modal-body">
-                        <div class="form-group">
-                            <label for="update-name-input" class="col-sm-2 control-label">
-                                Name
-                            </label>
-                            <div class="col-sm-9">
-                                <input
-                                    id="update-name-input"
-                                    name="name"
-                                    type="text"
-                                    value="---"
-                                    placeholder="unnamed"
-                                    class="input-name form-control" />
+                    <div class="form-group">
+                        <label for="update-name-input" class="col-sm-2 control-label">
+                            Name
+                        </label>
+                        <div class="col-sm-9">
+                            <input id="update-name-input" name="name" type="text" value="---" placeholder="unnamed" class="input-name form-control" />
 
-                                <span class="help-block">
-                                    Give this check a human-friendly name,
-                                    so you can easily recognize it later.
-                                </span>
-                            </div>
+                            <span class="help-block">
+                                Give this check a human-friendly name, so you can easily recognize it later.
+                            </span>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="update-tags-input" class="col-sm-2 control-label">
-                                Tags
-                            </label>
-                            <div class="col-sm-9">
-                                <input
-                                    id="update-tags-input"
-                                    name="tags"
-                                    type="text"
-                                    value=""
-                                    placeholder="production www"
-                                    class="form-control" />
+                    <div class="form-group">
+                        <label for="update-tags-input" class="col-sm-2 control-label">
+                            Tags
+                        </label>
+                        <div class="col-sm-9">
+                            <input id="update-tags-input" name="tags" type="text" value="" placeholder="production www" class="form-control" />
 
-                                <span class="help-block">
-                                    Optionally, assign tags for easy filtering.
-                                    Separate multiple tags with spaces.
-                                </span>
-                            </div>
+                            <span class="help-block">
+                                Optionally, assign tags for easy filtering. Separate multiple tags with spaces.
+                            </span>
                         </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -116,33 +102,23 @@
             {% csrf_token %}
             <input type="hidden" name="timeout" id="update-timeout-timeout" />
             <input type="hidden" name="grace" id="update-timeout-grace" />
-            <div class="modal-content">
+            <div class="modal-content" id="cron-time-change-form">
                 <div class="modal-body">
                     <div class="update-timeout-info text-center">
-                        <span
-                            class="update-timeout-label"
-                            data-toggle="tooltip"
-                            title="Expected time between pings.">
+                        <span class="update-timeout-label" data-toggle="tooltip" title="Expected time between pings.">
                             Period
                         </span>
-                        <span
-                            id="period-slider-value"
-                            class="update-timeout-value">
+                        <span id="period-slider-value" class="update-timeout-value">
                             1 day
                         </span>
                     </div>
                     <div id="period-slider"></div>
 
                     <div class="update-timeout-info text-center">
-                        <span
-                            class="update-timeout-label"
-                            data-toggle="tooltip"
-                            title="When check is late, how much time to wait until alert is sent">
+                        <span class="update-timeout-label" data-toggle="tooltip" title="When check is late, how much time to wait until alert is sent">
                             Grace Time
                         </span>
-                        <span
-                            id="grace-slider-value"
-                            class="update-timeout-value">
+                        <span id="grace-slider-value" class="update-timeout-value">
                             1 day
                         </span>
                     </div>
@@ -162,9 +138,69 @@
 
                 </div>
                 <div class="modal-footer">
+                    <div class="btn-group pull-left">
+                        <label class="btn btn-primary show-slider-modal">Slider</label>
+                        <label class="btn btn-default show-inputs-modal">Form</label>
+                    </div>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
+            </div>
+        </form>
+        <form id="update-timeout-form-inputs" method="post">
+            {% csrf_token %}
+            <!-- <input type="hidden" name="timeout" id="update-timeout-timeout" />
+            <input type="hidden" name="grace" id="update-timeout-grace" /> -->
+            <div class="modal-header text-center">
+                <h2>Update Period and Grace time</h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="form-group">
+                            <label for="cron-period-input" id="cron-period-label">Period: <span id="cron-period-time"></span></label>
+                            <div class="input-group">
+                                <input type="number" min="31" class="form-control" id="cron-period-input" name="timeout">
+                                <div class="input-group-addon">days</div>
+                            </div>
+                            <span id="cron-period-errors"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="form-group">
+                            <label for="cron-grace-input">Grace Time: <span id="cron-grace-time"></span></label>
+                            <div class="input-group">
+                                <input type="number" min="31" class="form-control" id="cron-grace-input" name="grace">
+                                <div class="input-group-addon">days</div>
+                            </div>
+                        </div>
+                        <span id="cron-grace-errors"></span>
+                    </div>
+                </div>
+                <div class="update-timeout-terms">
+                    <p>
+                        <span>Period</span>
+                        Expected time between pings.
+                    </p>
+                    <p>
+                        <span>Grace Time</span>
+                        When a check is late, how much time to wait until alert is sent.
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="btn-group pull-left">
+                    <label class="btn btn-default show-slider-modal">Slider</label>
+                    <label class="btn btn-primary show-inputs-modal">Form</label>
+                </div>
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="update-cron-submit" type="submit" class="btn btn-primary">
+                    Save
+                </button>
             </div>
         </form>
     </div>
@@ -177,14 +213,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="remove-check-title">Remove Check <span class="remove-check-name"></span></h4>
+                    <h4 class="remove-check-title">Remove Check
+                        <span class="remove-check-name"></span>
+                    </h4>
                 </div>
                 <div class="modal-body">
                     <p>You are about to remove check
                         <strong class="remove-check-name">---</strong>.
                     </p>
-                    <p>Once it's gone there is no "undo" and you cannot get
-                    the old ping URL back.</p>
+                    <p>Once it's gone there is no "undo" and you cannot get the old ping URL back.</p>
                     <p>Are you sure?</p>
                 </div>
                 <div class="modal-footer">
@@ -256,12 +293,10 @@
                         {% include "front/snippets/powershell.html" %}
                     </div>
                     <div class="tab-pane" id="email">
-                            As an alternative to HTTP/HTTPS requests,
-                            you can "ping" this check by sending an
-                            email message to
-                            <div class="email-address">
-                                <code class="em"></code>
-                            </div>
+                        As an alternative to HTTP/HTTPS requests, you can "ping" this check by sending an email message to
+                        <div class="email-address">
+                            <code class="em"></code>
+                        </div>
                     </div>
                     {% endwith %}
                 </div>
@@ -278,14 +313,13 @@
     {% csrf_token %}
 </form>
 
-{% endblock %}
-
-{% block scripts %}
+{% endblock %} 
+{% block scripts %} 
 {% compress js %}
 <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/nouislider.min.js' %}"></script>
 <script src="{% static 'js/clipboard.min.js' %}"></script>
-<script src="{% static 'js/checks.js' %}"></script>
-{% endcompress %}
+<script src="{% static 'js/checks.js' %}"></script> 
+{% endcompress %} 
 {% endblock %}

@@ -71,3 +71,17 @@
  #show-usage-modal .tab-content {
      margin-top: 15px;
  }
+
+ #update-timeout-form-inputs{
+     background-color: white;
+     border-radius: 5px;
+ }
+
+ .minimum-time-errors{
+     color: red;
+     display: block;
+     border: 1px solid red;
+     margin: 3px 0;
+     padding: 3px;
+     border-radius: 3px;
+ }
