@@ -31,8 +31,8 @@ class Category(models.Model):
     """
     This class represents the Category table in the database.
     """
-    title = models.CharField(max_length=100, db_index=True)
-    slug = models.SlugField(max_length=100, db_index=True)
+    title = models.CharField(max_length=100, db_index=True, unique=True)
+    slug = models.SlugField(max_length=100, db_index=True, unique=True)
 
     def __unicode__(self):
         return '%s' % self.title

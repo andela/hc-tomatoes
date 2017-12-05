@@ -4,14 +4,9 @@ from django.template.defaultfilters import slugify
 from django import forms
 from hc.blog.models import Post, Category
 
-# class CategoryChoiceField(forms.ModelChoiceField):
-#      def label_from_instance(self, obj):
-#          return "%s" % (obj.title)
-
-#  class PostForm(forms.Form):
-#      title = forms.CharField()
-#      body = forms.CharField(widget=forms.Textarea, label='Body')
-#      category  = CategoryChoiceField(empty_label="Choose a Category", queryset=Category.objects.all())
+class CategoryChoiceField(forms.ModelChoiceField):
+     def label_from_instance(self, obj):
+         return "%s" % (obj.title)
 
 class PostForm(forms.ModelForm):
     """
@@ -20,12 +15,29 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'body', 'category']
+    category  = CategoryChoiceField(empty_label="Choose a Category", queryset=Category.objects.all())
+
+class CategoryForm(forms.ModelForm):
+    """
+    Model form for adding a category
+    """
+    class Meta:
+        model = Category
+        fields = ['title']
 ## VIEWS
 
 def index(request):
+    form = CategoryForm(request.POST)
+    if form.is_valid():
+        new_cat = Category()
+        new_cat.title = form.cleaned_data['title']
+        new_cat.slug = slugify(form.cleaned_data['title'])
+        new_cat.save()
+        return redirect(reverse('home'))
     return render(request, 'blog/index.html', {
         'categories': Category.objects.all(),
-        'posts': Post.objects.all()
+        'posts': Post.objects.all(),
+        'form': form
     })
 
 def view_post(request, slug):

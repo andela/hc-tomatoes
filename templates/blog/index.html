@@ -4,6 +4,31 @@
 {% block content %}
     <h1>Welcome to the HealthChecks Blog</h1>
     <h2>Categories</h2>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCategory">
+        Add a New Category
+      </button>
+      <div class="modal" tabindex="-1" role="dialog" id="newCategory">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Create a new Category</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action=".">
+                    {% csrf_token %}
+                    {{form}}
+                    <button type="submit" class="btn btn-secondary">Add Category</button>
+                </form>              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
     {% if categories %}
         <ul>
         {% for category in categories %}
@@ -15,6 +40,7 @@
     {% endif %}
 
     <h2>Posts</h2>
+    <a href="{% url 'create_blog_post' %}">Create a New Blog Post</a>    
     {% if posts %}
         <ul>
         {% for post in posts %}
@@ -24,5 +50,5 @@
     {% else %}
         <p>There are no posts.</p>
     {% endif %}
-
+    
 {% endblock %}
