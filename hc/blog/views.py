@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404, redirect, reverse, render
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import slugify
 from django import forms
 from hc.blog.models import Post, Category
@@ -25,7 +26,7 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ['title']
 ## VIEWS
-
+@login_required
 def index(request):
     form = CategoryForm(request.POST)
     if form.is_valid():
@@ -39,13 +40,14 @@ def index(request):
         'posts': Post.objects.all(),
         'form': form
     })
-
+    
+@login_required
 def view_post(request, slug):
     return render(request, 'blog/view_post.html', {
         'post': get_object_or_404(Post, slug=slug)
     })
 
-
+@login_required
 def view_category(request, slug):
     category = get_object_or_404(Category, slug=slug)
     return render(request, 'blog/view_category.html', {
@@ -53,6 +55,7 @@ def view_category(request, slug):
         'posts': Post.objects.filter(category=category)
     })
 
+@login_required
 def create_post(request):
     form = PostForm(request.POST)
     if form.is_valid():
