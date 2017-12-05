@@ -36,15 +36,15 @@ $(function () {
         connect: "lower",
         range: {
             'min': [60, 60],
-            '20%': [3600, 3600],
-            '40%': [86400, 86400],
-            '60%': [604800, 604800],
-            '80%': [2592000,2592000],
-            'max':31536000,
+            '25%': [3600, 3600],
+            '50%': [86400, 86400],
+            '75%': [604800, 604800],
+            'max': 7776000,
+            
         },
         pips: {
             mode: 'values',
-            values: [60, 3600,86400, 2592000,31536000,],
+            values: [60, 3600,86400, 604800,7776000,],
             density: 4,
             format: {
                 to: secsToText,
@@ -65,16 +65,16 @@ $(function () {
         start: [20],
         connect: "lower",
         range: {
-            'min': [60, 60], // one minute
-            '20%': [3600, 3600],// one hour
-            '40%': [86400, 86400], // one day
-            '60%': [604800, 604800], // a week
-            '80%': [2592000,2592000], // 30 days
-            'max':31536000,// a year
+            'min': [60, 60],
+            '25%': [3600, 3600],
+            '50%': [86400, 86400],
+            '75%': [604800, 604800],
+            'max': 7776000,
+            
         },
-        pips: { // for putting marks on theslider
+        pips: {
             mode: 'values',
-            values: [60, 3600,86400, 2592000,31536000,],
+            values: [60, 3600,86400, 604800,7776000,],
             density: 4,
             format: {
                 to: secsToText,
@@ -88,6 +88,20 @@ $(function () {
         $("#grace-slider-value").text(secsToText(rounded));
         $("#update-timeout-grace").val(rounded);
     });
+
+    function showSimple() {
+        $("#update-timeout-form").show();
+        $("#update-timeout-form-advanced").hide();
+    }
+
+    function showAdvanced() {
+        $("#update-timeout-form").hide();
+        $("#update-timeout-form-advanced").show();
+    }
+
+    $(".show-slider-modal").click(showSimple)
+    $(".show-advanced-modal").click(showAdvanced)
+    
 
 
     $('[data-toggle="tooltip"]').tooltip();
@@ -106,7 +120,7 @@ $(function () {
 
     $(".timeout-grace").click(function() {
         var $this = $(this);
-
+        showSimple()
         $("#update-timeout-form").attr("action", $this.data("url"));
         periodSlider.noUiSlider.set($this.data("timeout"))
         graceSlider.noUiSlider.set($this.data("grace"))
