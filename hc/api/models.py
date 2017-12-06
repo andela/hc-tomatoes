@@ -33,6 +33,7 @@ PO_PRIORITIES = {
     1: "high",
     2: "emergency"
 }
+CRON_KIND = (("simple","Simple"),("advanced","Advanced"))
 
 
 class Check(models.Model):
@@ -52,6 +53,9 @@ class Check(models.Model):
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
+    cron_kind= models.CharField(max_length=100, choices=CRON_KIND, default="simple")
+    cron_schedule = models.CharField(max_length=100, default= "* * * * *")
+
 
     def name_then_code(self):
         if self.name:
@@ -120,6 +124,11 @@ class Check(models.Model):
             "n_pings": self.n_pings,
             "status": self.get_status()
         }
+
+        if self.cron_kind == "simple":
+            result["timeout"] = self.timeout
+        elif self.cron_kind == "advanced":
+            result["cron_schedule"] = self.cron_schedule
 
         if self.last_ping:
             result["last_ping"] = self.last_ping.isoformat()
