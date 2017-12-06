@@ -175,7 +175,7 @@ def update_timeout(request, code):
             return HttpResponseBadRequest()
 
         check.cron_kind = "advanced"
-        check.grace = td(seconds=form.cleaned_data["grace"])
+        check.grace = td(minutes=form.cleaned_data["grace"])
         check.cron_schedule = form.cleaned_data["cron_schedule"]
     check.save()
     return redirect("hc-checks")

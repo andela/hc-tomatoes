@@ -97,8 +97,6 @@ $(function () {
     function showAdvanced() {
         $("#update-timeout-form").hide();
         $("#update-timeout-form-advanced").show();
-        $("#cron-grace-input").val(Math.floor(this.dataset.grace/60))
-        $("#cron-schedule-input").val(this.dataset.cronschedule)
     }
 
     $(".show-slider-modal").click(showSimple)
@@ -127,6 +125,11 @@ $(function () {
         periodSlider.noUiSlider.set($this.data("timeout"))
         graceSlider.noUiSlider.set($this.data("grace"))
         this.dataset.cronkind === "simple" ? showSimple(): showAdvanced();
+
+        if (this.dataset.cronkind === "advanced"){
+            $("#cron-grace-input").val(Math.floor(this.dataset.grace/60))
+            $("#cron-schedule-input").val(this.dataset.cronschedule)
+        }
 
         $('#update-timeout-modal').modal({"show":true, "backdrop":"static"});
 

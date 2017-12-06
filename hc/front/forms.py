@@ -24,7 +24,7 @@ class TimeoutForm(forms.Form):
 
 
 class AdvancedCronForm(forms.Form):
-    grace = forms.IntegerField(min_value=60, max_value=7776000)
+    grace = forms.IntegerField(min_value=1, max_value=7776000)
     cron_schedule = forms.CharField(max_length=100, validators=[CronScheduleValidator()])
 
 
