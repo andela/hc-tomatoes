@@ -5,28 +5,25 @@ html {
 
 body {
     /* Margin bottom by footer height */
-    margin-bottom: 140px;
+    margin-bottom: 50px;
+    margin-top: 50px;
 }
 
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 81px;
-    line-height: 80px;
+
+#footer{
     color: #AAA;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #2c2c2c;
+    background: #2c2c2c;
 }
 
-.footer ul {
+footer ul {
     list-style: none;
     margin: 0;
     padding: 0;
     font-size: small;
 }
 
-.footer li {
+footer li {
     display: inline-block;
     margin: 0 10px 0 0;
 }

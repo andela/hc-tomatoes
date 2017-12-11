@@ -34,7 +34,7 @@
     {% endcompress %}
 </head>
 <body class="page-{{ page }}">
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
         <div class="navbar-header">
             <button
@@ -149,20 +149,19 @@
         {% block content %}{% endblock %}
     </div>
     {% endblock %}
+    
+        <footer class="navbar navbar-default navbar-fixed-bottom text-center" id="footer"> 
+                <ul>
+                    <li>&copy; 2015-2016 Monkey See Monkey Do SIA</li>
+                    <li><a href="{% url 'hc-terms' %}">Terms</a></li>
+                    <li><a href="{% url 'hc-privacy' %}">Privacy</a></li>
+                    {% if show_pricing %}
+                    <li><a href="{% url 'hc-pricing' %}">Pricing</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'hc-about' %}">Contact</a></li>
+                </ul>
+        </footer>
 
-    <footer class="footer">
-        <div class="container">
-            <ul>
-                <li>&copy; 2015-2016 Monkey See Monkey Do SIA</li>
-                <li><a href="{% url 'hc-terms' %}">Terms</a></li>
-                <li><a href="{% url 'hc-privacy' %}">Privacy</a></li>
-                {% if show_pricing %}
-                <li><a href="{% url 'hc-pricing' %}">Pricing</a></li>
-                {% endif %}
-                <li><a href="{% url 'hc-about' %}">Contact</a></li>
-            </ul>
-        </div>
-    </footer>
 
 
     {% block scripts %}

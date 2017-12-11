@@ -16,7 +16,7 @@ from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm, AdvancedCronForm)
 
 
 # from itertools recipes:
@@ -156,16 +156,28 @@ def update_name(request, code):
 def update_timeout(request, code):
     assert request.method == "POST"
 
+    # get the form type
+    cron_kind = request.POST.get("cron-kind")
     check = get_object_or_404(Check, code=code)
     if check.user != request.team.user:
         return HttpResponseForbidden()
+    
+    if cron_kind == "simple":
+        form = TimeoutForm(request.POST)
+        if not form.is_valid():
+            return HttpResponseBadRequest()
 
-    form = TimeoutForm(request.POST)
-    if form.is_valid():
         check.timeout = td(seconds=form.cleaned_data["timeout"])
         check.grace = td(seconds=form.cleaned_data["grace"])
-        check.save()
+    elif cron_kind == "advanced":
+        form = AdvancedCronForm(request.POST)
+        if not form.is_valid():
+            return HttpResponseBadRequest()
 
+        check.cron_kind = "advanced"
+        check.grace = td(minutes=form.cleaned_data["grace"])
+        check.cron_schedule = form.cleaned_data["cron_schedule"]
+    check.save()
     return redirect("hc-checks")
 
 

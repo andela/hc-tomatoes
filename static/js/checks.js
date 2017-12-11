@@ -36,14 +36,15 @@ $(function () {
         connect: "lower",
         range: {
             'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
+            '25%': [3600, 3600],
+            '50%': [86400, 86400],
+            '75%': [604800, 604800],
+            'max': 7776000,
+            
         },
         pips: {
             mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
+            values: [60, 3600,86400, 604800,7776000,],
             density: 4,
             format: {
                 to: secsToText,
@@ -65,14 +66,15 @@ $(function () {
         connect: "lower",
         range: {
             'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
+            '25%': [3600, 3600],
+            '50%': [86400, 86400],
+            '75%': [604800, 604800],
+            'max': 7776000,
+            
         },
         pips: {
             mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
+            values: [60, 3600,86400, 604800,7776000,],
             density: 4,
             format: {
                 to: secsToText,
@@ -86,6 +88,20 @@ $(function () {
         $("#grace-slider-value").text(secsToText(rounded));
         $("#update-timeout-grace").val(rounded);
     });
+
+    function showSimple() {
+        $("#update-timeout-form").show();
+        $("#update-timeout-form-advanced").hide();
+    }
+
+    function showAdvanced() {
+        $("#update-timeout-form").hide();
+        $("#update-timeout-form-advanced").show();
+    }
+
+    $(".show-slider-modal").click(showSimple)
+    $(".show-advanced-modal").click(showAdvanced)
+    
 
 
     $('[data-toggle="tooltip"]').tooltip();
@@ -104,10 +120,17 @@ $(function () {
 
     $(".timeout-grace").click(function() {
         var $this = $(this);
-
         $("#update-timeout-form").attr("action", $this.data("url"));
+        $("#update-timeout-form-advanced").attr("action", $this.data("url"))
         periodSlider.noUiSlider.set($this.data("timeout"))
         graceSlider.noUiSlider.set($this.data("grace"))
+        this.dataset.cronkind === "simple" ? showSimple(): showAdvanced();
+
+        if (this.dataset.cronkind === "advanced"){
+            $("#cron-grace-input").val(Math.floor(this.dataset.grace/60))
+            $("#cron-schedule-input").val(this.dataset.cronschedule)
+        }
+
         $('#update-timeout-modal').modal({"show":true, "backdrop":"static"});
 
         return false;
