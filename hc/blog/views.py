@@ -1,13 +1,17 @@
-from django.shortcuts import render_to_response, get_object_or_404, redirect, reverse, render
-from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from django.template.defaultfilters import slugify
 from django import forms
-from hc.blog.models import Post, Category
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import (HttpResponseRedirect, get_object_or_404,
+                              redirect, render, render_to_response, reverse)
+from django.template import RequestContext
+from django.template.defaultfilters import slugify
+
+from hc.blog.models import Category, Comment, Post
+
 
 class CategoryChoiceField(forms.ModelChoiceField):
-     def label_from_instance(self, obj):
-         return "%s" % (obj.title)
+    def label_from_instance(self, obj):
+        return "%s" % (obj.title)
+
 
 class PostForm(forms.ModelForm):
     """
@@ -16,7 +20,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'body', 'category']
-    category  = CategoryChoiceField(empty_label="Choose a Category", queryset=Category.objects.all())
+    category = CategoryChoiceField(
+        empty_label="Choose a Category", queryset=Category.objects.all())
+
 
 class CategoryForm(forms.ModelForm):
     """
@@ -25,10 +31,22 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ['title']
-## VIEWS
+
+
+class CommentForm(forms.ModelForm):
+    """
+    Model form for commenting on a blog Post
+    """
+    class Meta:
+        model = Comment
+        fields = ['text']
+
+# VIEWS
+
+
 @login_required
 def index(request):
-    form = CategoryForm(request.POST)
+    form = CategoryForm()
     if form.is_valid():
         new_cat = Category()
         new_cat.title = form.cleaned_data['title']
@@ -40,20 +58,34 @@ def index(request):
         'posts': Post.objects.all(),
         'form': form
     })
-    
+
+
 @login_required
 def view_post(request, slug):
+    form = CommentForm(request.POST)
+    blog_post = get_object_or_404(Post, slug=slug)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = blog_post
+        comment.author = request.user
+        comment.save()
+        return HttpResponseRedirect(request.path_info)
     return render(request, 'blog/view_post.html', {
-        'post': get_object_or_404(Post, slug=slug)
+        'post': blog_post,
+        'form': form
     })
+
 
 @login_required
 def view_category(request, slug):
     category = get_object_or_404(Category, slug=slug)
+    form = CommentForm(request.POST)
     return render(request, 'blog/view_category.html', {
         'category': category,
-        'posts': Post.objects.filter(category=category)
+        'posts': Post.objects.filter(category=category),
+        'form': form
     })
+
 
 @login_required
 def create_post(request):
@@ -65,8 +97,8 @@ def create_post(request):
         new_post.author = request.user
         new_post.slug = slugify(form.cleaned_data['title'])
         new_post.category = form.cleaned_data['category']
-        
+
         new_post.save()
         return redirect(reverse('home'))
     return render(request, 'blog/create_post.html', {
-        'form' : form})
+        'form': form})

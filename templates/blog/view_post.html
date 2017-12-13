@@ -4,5 +4,28 @@
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
+    <h2>{{ post.title }}</h2>    
+    <p>By {{ post.author }}</p>
+    <p>{{ post.publish }}</p>
     {{ post.body }}
+
+    <hr>
+
+    <div>
+        <form method="POST"  action="">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit">Comment</button>
+        </form>
+    </div>
+
+    {% for comment in post.comments.all %}
+        <div class="comment">
+            <div class="date">{{ comment.created_date }}</div>
+            <strong>{{ comment.author }}</strong>
+            <p>{{ comment.text|linebreaks }}</p>
+        </div>        
+    {% empty %}
+        <p>No comments here yet :(</p>
+    {% endfor %}
 {% endblock %}

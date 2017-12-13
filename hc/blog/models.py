@@ -40,3 +40,15 @@ class Category(models.Model):
     @permalink
     def get_absolute_url(self):
         return ('view_blog_category', None, {'slug': self.slug})
+
+class  Comment(models.Model):
+    """
+    This class represents the Comment table in the database
+    """
+    post = models.ForeignKey('Post', related_name='comments')
+    author = models.CharField(max_length=200)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __unicode__(self):
+        return '%s' % self.text

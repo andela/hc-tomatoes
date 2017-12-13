@@ -1,5 +1,5 @@
 from django.contrib import admin
-from hc.blog.models import Post, Category
+from hc.blog.models import Post, Category, Comment
 
 # Register your models here.
 class PostAdmin(admin.ModelAdmin):
@@ -13,5 +13,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('title',)
     prepopulated_fields = {'slug':('title',)}
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('created_date', 'text', 'author')
 admin.site.register(Post, PostAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Comment, CommentAdmin)
