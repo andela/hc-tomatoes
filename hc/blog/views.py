@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import Textarea, ModelChoiceField, CharField
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import (HttpResponseRedirect, get_object_or_404,
                               redirect, render, render_to_response, reverse)
@@ -13,13 +14,17 @@ class CategoryChoiceField(forms.ModelChoiceField):
         return "%s" % (obj.title)
 
 
-class PostForm(forms.ModelForm):
+class NewPostForm(forms.ModelForm):
     """
     Model Form for creating a new post.
     """
     class Meta:
         model = Post
         fields = ['title', 'body', 'category']
+        widgets = {
+            'body' : Textarea(attrs={'cols': 150, 'rows': 20}),
+            'title' : Textarea(attrs={'cols':75, 'rows':1})
+        }
     category = CategoryChoiceField(
         empty_label="Choose a Category", queryset=Category.objects.all())
 
@@ -40,6 +45,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text']
+        widgets = {
+            'text': Textarea(attrs={'cols': 150, 'rows': 4}),
+        }
 
 # VIEWS
 
@@ -79,17 +87,15 @@ def view_post(request, slug):
 @login_required
 def view_category(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    form = CommentForm(request.POST)
     return render(request, 'blog/view_category.html', {
         'category': category,
-        'posts': Post.objects.filter(category=category),
-        'form': form
+        'posts': Post.objects.filter(category=category)
     })
 
 
 @login_required
 def create_post(request):
-    form = PostForm(request.POST)
+    form = NewPostForm(request.POST)
     if form.is_valid():
         new_post = Post()
         new_post.title = form.cleaned_data['title']
