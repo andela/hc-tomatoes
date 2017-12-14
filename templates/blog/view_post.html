@@ -30,7 +30,7 @@
         <form method="POST"  action="">
             {% csrf_token %}
             {{form.text}}
-            <p><button type="submit">Comment</button></p>
+            <p><button class="btn btn-primary" type="submit">Comment</button></p>
         </form>
     </div>
 {% endblock %}
