@@ -56,6 +56,10 @@
                 data-grace="{{ check.grace.total_seconds }}"
                 data-cronSchedule= "{{ check.cron_schedule }}"
                 data-cronKind = "{{ check.cron_kind}}"
+                data-toggle="popover" 
+                data-placement="top"
+                
+                title="Expected Ping Dates"
                 class="timeout-grace">
 
                 {% if check.cron_kind == "simple" %}

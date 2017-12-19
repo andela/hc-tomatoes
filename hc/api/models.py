@@ -12,6 +12,8 @@ from django.urls import reverse
 from django.utils import timezone
 from hc.api import transports
 from hc.lib import emails
+from croniter import croniter
+from datetime import datetime
 
 STATUSES = (
     ("up", "Up"),
@@ -113,7 +115,7 @@ class Check(models.Model):
 
     def to_dict(self):
         pause_rel_url = reverse("hc-api-pause", args=[self.code])
-
+        it = croniter(self.cron_schedule, datetime.utcnow())
         result = {
             "name": self.name,
             "ping_url": self.url(),
@@ -122,7 +124,8 @@ class Check(models.Model):
             "timeout": int(self.timeout.total_seconds()),
             "grace": int(self.grace.total_seconds()),
             "n_pings": self.n_pings,
-            "status": self.get_status()
+            "status": self.get_status(),
+            "expected_pings": [it.get_next(datetime).strftime("%A %d, %B %Y %I:%M%p") for i in range(0,5)]
         }
 
         if self.cron_kind == "simple":
