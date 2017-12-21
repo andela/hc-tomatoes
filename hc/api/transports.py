@@ -4,8 +4,7 @@ from django.utils import timezone
 import json
 import requests
 from six.moves.urllib.parse import quote
-
-from hc.lib import emails
+from hc.lib import emails, sms
 
 
 def tmpl(template_name, **ctx):
@@ -39,6 +38,28 @@ class Transport(object):
 
     def checks(self):
         return self.channel.user.check_set.order_by("created")
+
+
+class AfricasTalking(Transport):
+    def notify(self, check):
+        if not self.channel.username:
+            return "username not provided"
+        if not self.channel.apikey:
+            return "api key not provided"
+        if not self.channel.value:
+            return "contact not provided"
+        message = """
+        Healthchecks Notification!\n
+        Name:  %s \n
+        Status: %s \n
+        Last ping: %s\n
+        Total Pings: %s
+        
+        """ % (check.name, check.status, check.last_ping.strftime('%x, %X'), check.n_pings)
+        username = self.channel.username
+        apikey = self.channel.apikey
+        to = self.channel.value
+        return sms.sendsms(username, apikey, to, message)
 
 
 class Email(Transport):
