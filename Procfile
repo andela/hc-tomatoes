@@ -1,1 +1,1 @@
-web: gunicorn hc-tomatoes.wsgi --log-file -
+web: gunicorn hc.wsgi --log-file -

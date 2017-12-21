@@ -11,6 +11,7 @@ django-compressor==2.1
 django-ses-backend==0.1.1
 djmail==0.11.0
 futures==3.0.3
+gunicorn==19.7.1
 idna==2.6
 lxml==4.1.1
 premailer==2.9.6
