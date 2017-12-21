@@ -1,0 +1,1 @@
+web: gunicorn hc-tomatoes.wsgi --log-file -
