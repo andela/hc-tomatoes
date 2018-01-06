@@ -30,13 +30,26 @@ class SendAlertsTestCase(BaseTestCase):
         assert set(names) == set(handled_names)
         ### The above assert fails. Make it pass
 
-    def test_it_handles_grace_period(self):
-        check = Check(user=self.alice, status="up")
-        # 1 day 30 minutes after ping the check is in grace period:
-        check.last_ping = timezone.now() - timedelta(days=1, minutes=30)
-        check.save()
+    @patch("hc.api.management.commands.sendalerts.Command.handle_one")
+    def test_it_handles_grace_period(self, mock):
+        # check = Check(user=self.alice, status="up")
+        # # 1 day 30 minutes after ping the check is in grace period:
+        # check.last_ping = timezone.now() - timedelta(days=1, minutes=30)
+        # check.save()
 
-        # Expect no exceptions--
-        Command().handle_one(check)
+        # # Expect no exceptions--
+        # Command().handle_one(check)
 
     ### Assert when Command's handle many that when handle_many should return True
+        tomorrow = timezone.now() + timedelta(days=1)
+        names = ["Check %d" % d for d in range(0, 10)]
+
+        for name in names:
+            check = Check(user=self.alice, name=name)
+            check.alert_after = tomorrow
+            check.status = "down"
+            check.save()
+
+        result = Command().handle_many()
+        self.assertTrue(result)
+        
