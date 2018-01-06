@@ -75,7 +75,8 @@ class PingTestCase(TestCase):
         checki.status = "paused"
 
         #make a ping
-        r = self.client.get("/ping/%s" % checki.code)
+        self.client.get("/ping/%s" % checki.code)
+        checki.refresh_from_db()
 
         #assert status has changed from paused
         self.assertNotEqual(checki.get_status(), "paused")
