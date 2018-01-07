@@ -31,10 +31,11 @@ class PauseTestCase(BaseTestCase):
 
         ### Test that it only allows post requests
     def test_it_only_allows_post_requests(self):
+        """ tests if the pause endpoint allows only post requests """
         check = Check(user=self.alice, status="up")
         check.save()
 
-        url = f"/api/v1/checks/{check.code}/pause"
+        url = "/api/v1/checks/{}/pause".format(check.code)
         r = self.client.get(url, HTTP_X_API_KEY="abc")
         self.assertEqual(r.status_code, 405)
 
