@@ -54,8 +54,20 @@
                 data-url="{% url 'hc-update-timeout' check.code %}"
                 data-timeout="{{ check.timeout.total_seconds }}"
                 data-grace="{{ check.grace.total_seconds }}"
+                data-cronSchedule= "{{ check.cron_schedule }}"
+                data-cronKind = "{{ check.cron_kind}}"
+                data-toggle="popover" 
+                data-placement="top"
+                
+                title="Expected Ping Dates"
                 class="timeout-grace">
-                {{ check.timeout|hc_duration }}
+
+                {% if check.cron_kind == "simple" %}
+                    {{ check.timeout|hc_duration }}
+                {% else  %}
+                    <span class="cron-schedule">{{ check.cron_schedule }}</span>
+                {% endif %}
+
                 <br />
                 <span class="checks-subline">
                 {{ check.grace|hc_duration }}

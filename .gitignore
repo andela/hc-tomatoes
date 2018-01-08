@@ -7,5 +7,9 @@ static-collected
 
 .DS_Store
 static/.DS_Store
+<<<<<<< HEAD
 hc-venv/
 .vscode/
+=======
+.cache/
+>>>>>>> ft-fixes-api-tests-153112182

@@ -71,3 +71,21 @@
  #show-usage-modal .tab-content {
      margin-top: 15px;
  }
+
+ #update-timeout-form-advanced{
+     background-color: white;
+     border-radius: 5px;
+ }
+ #cron-schedule-show{
+ padding-bottom: 5px;
+
+ }
+
+ #cron-schedule-show li {
+     list-style-type: none;
+ }
+ 
+ .cron_error {
+color: red;
+
+ }
