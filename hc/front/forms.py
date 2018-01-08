@@ -1,5 +1,6 @@
 from django import forms
 from hc.api.models import Channel
+from .validators import CronScheduleValidator
 
 
 class NameTagsForm(forms.Form):
@@ -18,8 +19,13 @@ class NameTagsForm(forms.Form):
 
 
 class TimeoutForm(forms.Form):
-    timeout = forms.IntegerField(min_value=60, max_value=2592000)
-    grace = forms.IntegerField(min_value=60, max_value=2592000)
+    timeout = forms.IntegerField(min_value=60, max_value=7776000)
+    grace = forms.IntegerField(min_value=60, max_value=7776000)
+
+
+class AdvancedCronForm(forms.Form):
+    grace = forms.IntegerField(min_value=1, max_value=7776000)
+    cron_schedule = forms.CharField(max_length=100, validators=[CronScheduleValidator()])
 
 
 class AddChannelForm(forms.ModelForm):

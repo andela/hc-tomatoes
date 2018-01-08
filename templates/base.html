@@ -13,6 +13,8 @@
 
     {% compress css %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type="text/css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/icomoon.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/nouislider.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/nouislider.pips.css' %}" type="text/css">
@@ -32,7 +34,7 @@
     {% endcompress %}
 </head>
 <body class="page-{{ page }}">
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
         <div class="navbar-header">
             <button
@@ -151,26 +153,33 @@
         {% block content %}{% endblock %}
     </div>
     {% endblock %}
+    
+        <footer class="navbar navbar-default navbar-fixed-bottom text-center" id="footer"> 
+                <ul>
+                    <li>&copy; 2015-2016 Monkey See Monkey Do SIA</li>
+                    <li><a href="{% url 'hc-terms' %}">Terms</a></li>
+                    <li><a href="{% url 'hc-privacy' %}">Privacy</a></li>
+                    {% if show_pricing %}
+                    <li><a href="{% url 'hc-pricing' %}">Pricing</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'hc-about' %}">Contact</a></li>
+                </ul>
+        </footer>
 
-    <footer class="footer">
-        <div class="container">
-            <ul>
-                <li>&copy; 2015-2016 Monkey See Monkey Do SIA</li>
-                <li><a href="{% url 'hc-terms' %}">Terms</a></li>
-                <li><a href="{% url 'hc-privacy' %}">Privacy</a></li>
-                {% if show_pricing %}
-                <li><a href="{% url 'hc-pricing' %}">Pricing</a></li>
-                {% endif %}
-                <li><a href="{% url 'hc-about' %}">Contact</a></li>
-            </ul>
-        </div>
-    </footer>
 
 
     {% block scripts %}
     {% compress js %}
-    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <!--<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>-->
+    <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(".carousel").carousel()
+    </script>
     {% endcompress %}
     {% endblock %}
 </body>

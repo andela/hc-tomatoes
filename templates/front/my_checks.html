@@ -116,6 +116,7 @@
             {% csrf_token %}
             <input type="hidden" name="timeout" id="update-timeout-timeout" />
             <input type="hidden" name="grace" id="update-timeout-grace" />
+            <input type="hidden" name="cron-kind" value="simple">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="update-timeout-info text-center">
@@ -162,13 +163,70 @@
 
                 </div>
                 <div class="modal-footer">
+                        <div class="btn-group pull-left">
+                            <label class="btn btn-primary show-slider-modal">Simple</label>
+                            <label class="btn btn-default show-advanced-modal">Advanced</label>
+                        </div>
+
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </form>
+        <form id="update-timeout-form-advanced" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="cron-kind" value="advanced">
+            <div class="modal-header text-center">
+                <h2>Set Cron Schedule</h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="form-group">
+                            <label for="cron-period-input" id="cron-period-label">Cron Schedule: <span id="cron-period-time"></span></label>
+                            <div class="form-group">
+                                <input type="text"
+                                    class="form-control" 
+                                    id="cron-schedule-input" 
+                                    name="cron_schedule"
+                                    placeholder="* * * * *">
+                                    <p>m h dom mon dow</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="form-group">
+                            <label for="cron-grace-input">Grace Time: <span id="cron-grace-time"></span></label>
+                            <div class="input-group">
+                                <input type="number" min="1" max="7776000" class="form-control" id="cron-grace-input" name="grace">
+                                <div class="input-group-addon">minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cron-schedule-show" class="text-center" >
+                <p>Expected Pings:</p>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group pull-left">
+                    <label class="btn btn-default show-slider-modal">Simple</label>
+                    <label class="btn btn-primary show-advanced-modal">Advanced</label>
+                </div>
+        
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="update-cron-submit" type="submit" class="btn btn-primary">
+                    Save
+                </button>
+            </div>
+        </form>
     </div>
 </div>
+
+
+
 
 <div id="remove-check-modal" class="modal">
     <div class="modal-dialog">

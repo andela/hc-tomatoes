@@ -1,5 +1,5 @@
 from collections import Counter
-from datetime import timedelta as td
+from datetime import timedelta as td, datetime
 from itertools import tee
 
 import requests
@@ -7,16 +7,18 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
+from croniter import croniter
+
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm, AdvancedCronForm)
 
 
 # from itertools recipes:
@@ -156,17 +158,47 @@ def update_name(request, code):
 def update_timeout(request, code):
     assert request.method == "POST"
 
+    if "role" in request.POST:
+        schedule = request.POST.get("schedule")
+        # if not croniter.is_valid(schedule):
+        #     return JsonResponse({"error": "Invalid cron expression"})
+
+        # it = croniter(schedule, datetime.utcnow(), day_or=False)
+        # expected_pings = [it.get_next(datetime).strftime("%A %d, %B %Y %I:%M%p") for i in range(0,5)]
+        # return JsonResponse({"pings": expected_pings})
+        try:
+            it = croniter(schedule, datetime.utcnow(), day_or=False)
+            expected_pings = [it.get_next(datetime).strftime("%A %d, %B %Y %I:%M%p") for i in range(0,5)]
+            return JsonResponse({"pings": expected_pings})
+        except:
+            return JsonResponse({"error": "Invalid cron expression"})
+
+    # get the form type
+    cron_kind = request.POST.get("cron-kind")
     check = get_object_or_404(Check, code=code)
     if check.user != request.team.user:
         return HttpResponseForbidden()
+    
+    if cron_kind == "simple":
+        form = TimeoutForm(request.POST)
+        if not form.is_valid():
+            return HttpResponseBadRequest()
 
-    form = TimeoutForm(request.POST)
-    if form.is_valid():
         check.timeout = td(seconds=form.cleaned_data["timeout"])
         check.grace = td(seconds=form.cleaned_data["grace"])
-        check.save()
+    elif cron_kind == "advanced":
+        form = AdvancedCronForm(request.POST)
+        if not form.is_valid():
+            return HttpResponseBadRequest()
 
+        check.cron_kind = "advanced"
+        check.grace = td(minutes=form.cleaned_data["grace"])
+        check.cron_schedule = form.cleaned_data["cron_schedule"]
+    check.save()
     return redirect("hc-checks")
+
+
+
 
 
 @login_required

@@ -1,15 +1,16 @@
 $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
 
-    var MINUTE = {name: "minute", nsecs: 60};
-    var HOUR = {name: "hour", nsecs: MINUTE.nsecs * 60};
-    var DAY = {name: "day", nsecs: HOUR.nsecs * 24};
-    var WEEK = {name: "week", nsecs: DAY.nsecs * 7};
+    var MINUTE = { name: "minute", nsecs: 60 };
+    var HOUR = { name: "hour", nsecs: MINUTE.nsecs * 60 };
+    var DAY = { name: "day", nsecs: HOUR.nsecs * 24 };
+    var WEEK = { name: "week", nsecs: DAY.nsecs * 7 };
     var UNITS = [WEEK, DAY, HOUR, MINUTE];
 
-    var secsToText = function(total) {
+    var secsToText = function (total) {
         var remainingSeconds = Math.floor(total);
         var result = "";
-        for (var i=0, unit; unit=UNITS[i]; i++) {
+        for (var i = 0, unit; unit = UNITS[i]; i++) {
             if (unit === WEEK && remainingSeconds % unit.nsecs != 0) {
                 // Say "8 days" instead of "1 week 1 day"
                 continue
@@ -36,23 +37,24 @@ $(function () {
         connect: "lower",
         range: {
             'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
+            '25%': [3600, 3600],
+            '50%': [86400, 86400],
+            '75%': [604800, 604800],
+            'max': 7776000,
+
         },
         pips: {
             mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
+            values: [60, 3600, 86400, 604800, 7776000,],
             density: 4,
             format: {
                 to: secsToText,
-                from: function() {}
+                from: function () { }
             }
         }
     });
 
-    periodSlider.noUiSlider.on("update", function(a, b, value) {
+    periodSlider.noUiSlider.on("update", function (a, b, value) {
         var rounded = Math.round(value);
         $("#period-slider-value").text(secsToText(rounded));
         $("#update-timeout-timeout").val(rounded);
@@ -65,32 +67,47 @@ $(function () {
         connect: "lower",
         range: {
             'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
+            '25%': [3600, 3600],
+            '50%': [86400, 86400],
+            '75%': [604800, 604800],
+            'max': 7776000,
+
         },
         pips: {
             mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
+            values: [60, 3600, 86400, 604800, 7776000,],
             density: 4,
             format: {
                 to: secsToText,
-                from: function() {}
+                from: function () { }
             }
         }
     });
 
-    graceSlider.noUiSlider.on("update", function(a, b, value) {
+    graceSlider.noUiSlider.on("update", function (a, b, value) {
         var rounded = Math.round(value);
         $("#grace-slider-value").text(secsToText(rounded));
         $("#update-timeout-grace").val(rounded);
     });
 
+    function showSimple() {
+        $("#update-timeout-form").show();
+        $("#update-timeout-form-advanced").hide();
+    }
+
+    function showAdvanced() {
+        $("#update-timeout-form").hide();
+        $("#update-timeout-form-advanced").show();
+    }
+
+    $(".show-slider-modal").click(showSimple)
+    $(".show-advanced-modal").click(showAdvanced)
+
+
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    $(".my-checks-name").click(function() {
+    $(".my-checks-name").click(function () {
         var $this = $(this);
 
         $("#update-name-form").attr("action", $this.data("url"));
@@ -102,18 +119,79 @@ $(function () {
         return false;
     });
 
-    $(".timeout-grace").click(function() {
-        var $this = $(this);
+    function getCronPreview(schedule, getData, url) {
+        var url = url || $("#update-timeout-form-advanced").attr("action");
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+        // var schedule = $("#cron-schedule-input").val();
+        // var expectedPings = null;
+        var options = {
+            url: url,
+            type: "post",
+            headers: { "X-CSRFToken": token },
+            data: { schedule: schedule, role: "cron_preview" },
+            success: function (data) {
+                getData(data);
+            },
+            error: function (xhr, text, error) {
+                console.log(error);
+            }
+        }
+        $.ajax(options)
+    }
 
+    // 
+    $("#cron-schedule-input").keyup(function (event) {
+        var schedule = event.target.value;
+        getCronPreview(schedule, updateCronPreview)
+    }).on('input', function (event) {
+        var schedule = event.target.value;
+        getCronPreview(schedule, updateCronPreview)
+    })
+
+    var updateCronPreview = function (data) {
+        if ("pings" in data) {
+            var el = $("#cron-schedule-show");
+            if (el.hasClass("cron_error")) {
+                el.removeClass("cron_error");
+            }
+            el.html("<p>Expected Pings:</p>" + data["pings"].map(function (value) {
+                return "<li>" + value + "</li>"
+            }))
+            console.log(data["pings"])
+        } else {
+            $("#cron-schedule-show").html("<p>" + data["error"] + "</p>").addClass("cron_error");
+        }
+    }
+
+    $(".timeout-grace").click(function () {
+        var $this = $(this);
         $("#update-timeout-form").attr("action", $this.data("url"));
+        $("#update-timeout-form-advanced").attr("action", $this.data("url"))
         periodSlider.noUiSlider.set($this.data("timeout"))
         graceSlider.noUiSlider.set($this.data("grace"))
-        $('#update-timeout-modal').modal({"show":true, "backdrop":"static"});
+        this.dataset.cronkind === "simple" ? showSimple() : showAdvanced();
+
+        if (this.dataset.cronkind === "advanced") {
+            $("#cron-grace-input").val(Math.floor(this.dataset.grace / 60))
+            $("#cron-schedule-input").val(this.dataset.cronschedule)
+            getCronPreview(this.dataset.cronschedule, updateCronPreview);
+        }
+
+        $('#update-timeout-modal').modal({ "show": true, "backdrop": "static" });
 
         return false;
+    }).popover({
+        trigger: "hover",
+        content: function () {
+            getCronPreview(this.dataset.cronschedule, function (data) {
+                localStorage.setItem("expectedPings", data["pings"].map(value => value + "\n"))
+            }, this.dataset.url);
+            console.log("[" + localStorage.getItem("expectedPings") + "]")
+            return localStorage.getItem("expectedPings");
+        }
     });
 
-    $(".check-menu-remove").click(function() {
+    $(".check-menu-remove").click(function () {
         var $this = $(this);
 
         $("#remove-check-form").attr("action", $this.data("url"));
@@ -124,14 +202,14 @@ $(function () {
     });
 
 
-    $("#my-checks-tags button").click(function() {
+    $("#my-checks-tags button").click(function () {
         // .active has not been updated yet by bootstrap code,
         // so cannot use it
         $(this).toggleClass('checked');
 
         // Make a list of currently checked tags:
         var checked = [];
-        $("#my-checks-tags button.checked").each(function(index, el) {
+        $("#my-checks-tags button.checked").each(function (index, el) {
             checked.push(el.textContent);
         });
 
@@ -144,7 +222,7 @@ $(function () {
 
         function applyFilters(index, element) {
             var tags = $(".my-checks-name", element).data("tags").split(" ");
-            for (var i=0, tag; tag=checked[i]; i++) {
+            for (var i = 0, tag; tag = checked[i]; i++) {
                 if (tags.indexOf(tag) == -1) {
                     $(element).hide();
                     return;
@@ -161,14 +239,14 @@ $(function () {
 
     });
 
-    $(".pause-check").click(function(e) {
+    $(".pause-check").click(function (e) {
         var url = e.target.getAttribute("data-url");
         $("#pause-form").attr("action", url).submit();
         return false;
     });
 
 
-    $(".usage-examples").click(function(e) {
+    $(".usage-examples").click(function (e) {
         var a = e.target;
         var url = a.getAttribute("data-url");
         var email = a.getAttribute("data-email");
@@ -182,18 +260,18 @@ $(function () {
 
 
     var clipboard = new Clipboard('button.copy-link');
-    $("button.copy-link").mouseout(function(e) {
-        setTimeout(function() {
+    $("button.copy-link").mouseout(function (e) {
+        setTimeout(function () {
             e.target.textContent = "copy";
         }, 300);
     })
 
-    clipboard.on('success', function(e) {
+    clipboard.on('success', function (e) {
         e.trigger.textContent = "copied!";
         e.clearSelection();
     });
 
-    clipboard.on('error', function(e) {
+    clipboard.on('error', function (e) {
         var text = e.trigger.getAttribute("data-clipboard-text");
         prompt("Press Ctrl+C to select:", text)
     });
