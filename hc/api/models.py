@@ -129,7 +129,7 @@ class Check(models.Model):
         }
 
         if self.cron_kind == "simple":
-            result["timeout"] = self.timeout
+            result["timeout"] = int(self.timeout.total_seconds())
         elif self.cron_kind == "advanced":
             result["cron_schedule"] = self.cron_schedule
 
