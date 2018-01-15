@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/andela/hc-tomatoes.svg?branch=master)](https://travis-ci.org/andela/hc-tomatoes)
 # healthchecks
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
