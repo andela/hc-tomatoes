@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load compress humanize staticfiles hc_extras %}
+
+{% block title %}Notification Channels - healthchecks.io{% endblock %}
+
+
+{% block content %}
+<div class="row">
+<div class="col-sm-12">
+    <h1>SMS Integration</h1>
+
+    <p>Get an SMS message when check goes up or down.</p>
+
+    <p>
+        <strong>Tip:</strong>
+        Add multiple email contacts, to notify multiple team members.
+    </p>
+    <h2>Setup Guide</h2>
+    <div class="row ai-step">
+        <div class="col-sm-6">
+            <span class="step-no">1</span>
+            <p>
+                Create an account with
+                <strong>AfricasTalking</strong>. On the dashboard, Creat New Team
+            </p>
+
+        </div>
+        <div class="col-sm-6">
+            <img
+                class="ai-guide-screenshot"
+                alt="Screenshot"
+                src="{% static 'img/integrations/Team.png' %}">
+        </div>
+    </div>
+     <div class="row ai-step">
+        <div class="col-sm-6">
+            <span class="step-no">2</span>
+            <p>
+                Create new App, on the App click on
+                <strong>settings</strong>. To generate new <strong>API KEY</strong>
+            </p>
+
+        </div>
+        <div class="col-sm-6">
+            <img
+                class="ai-guide-screenshot"
+                alt="Screenshot"
+                src="{% static 'img/integrations/api key.png' %}">
+        </div>
+    </div>
+    <div class="row ai-step">
+        <div class="col-sm-6">
+            <span class="step-no">3</span>
+            <p>
+                Enter your <strong>Username</strong>,
+                <strong>Mobile Number</strong> and <strong>API KEY</strong> on the form below to receive alerts
+            </p>
+
+        </div>
+        <div class="col-sm-6">
+            <img
+                class="ai-guide-screenshot"
+                alt="Screenshot"
+                src="{% static 'img/integrations/sms.jpg' %}">
+        </div>
+    </div>
+
+    <h2>Integration Settings</h2>
+
+    <form method="POST" class="form-horizontal" action="{% url 'hc-add-channel' %}">
+        {% csrf_token %}
+        <input type="hidden" name="kind" value="africastalking" />
+        <div class="form-group">
+            <label for="id_username" class="col-sm-2 control-label">Username</label>
+            <div class="col-sm-7">
+                <input
+                    id="id_username"
+                    type="text"
+                    class="form-control"
+                    name="username"
+                    placeholder="username">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="id_api" class="col-sm-2 control-label">API Key</label>
+            <div class="col-sm-7">
+                <input
+                    id="id_api"
+                    type="text"
+                    class="form-control"
+                    name="apikey"
+                    placeholder="API key">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="id_contact" class="col-sm-2 control-label">Contact</label>
+            <div class="col-sm-7">
+                <input
+                    id="id_contact"
+                    type="text"
+                    class="form-control"
+                    name="value"
+                    placeholder="contact">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Save Integration</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% endcompress %}
+{% endblock %}

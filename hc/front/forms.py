@@ -26,7 +26,7 @@ class AddChannelForm(forms.ModelForm):
 
     class Meta:
         model = Channel
-        fields = ['kind', 'value']
+        fields = ['kind', 'value', 'username', 'apikey']
 
     def clean_value(self):
         value = self.cleaned_data["value"]
