@@ -87,3 +87,46 @@
     width: 22px;
     height: 22px;
 }
+
+.cron-services .col-sm-4{
+    margin-top: 10px;
+}
+
+.cron-services{
+    background: #EEEEEE;
+    background: -webkit-linear-gradient(#FFFFFF,#EEEEEE); /*Safari 5.1-6*/
+    background: -o-linear-gradient(#FFFFFF,#EEEEEE); /*Opera 11.1-12*/
+    background: -moz-linear-gradient(#FFFFFF,#EEEEEE); /*Fx 3.6-15*/
+    background: linear-gradient( #FFFFFF, #EEEEEE); /*Standard*/
+}
+.carousel-inner>.item>img{
+    width: 100%;
+    height: 450px;
+}
+.cron-teams{
+    background: #868585;
+
+}
+
+.cron-teams .col-sm-4{
+    margin-top: 40px;
+}
+#team-alerts-head{
+    color: #000000;
+}
+
+#grad {
+    background: #868585; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#EEEEEE,#2c2c2c); /*Safari 5.1-6*/
+    background: -o-linear-gradient(#EEEEEE,#2c2c2c); /*Opera 11.1-12*/
+    background: -moz-linear-gradient(#EEEEEE,#2c2c2c); /*Fx 3.6-15*/
+    background: linear-gradient( #EEEEEE, #2c2c2c); /*Standard*/
+  }
+
+ .index-bleed{
+      padding-bottom: 0;
+  }
+
+  /* footer{
+      background: #fffefe
+  } */

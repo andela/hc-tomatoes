@@ -12,6 +12,8 @@ from django.urls import reverse
 from django.utils import timezone
 from hc.api import transports
 from hc.lib import emails
+from croniter import croniter
+from datetime import datetime
 
 STATUSES = (
     ("up", "Up"),
@@ -33,6 +35,7 @@ PO_PRIORITIES = {
     1: "high",
     2: "emergency"
 }
+CRON_KIND = (("simple","Simple"),("advanced","Advanced"))
 
 
 class Check(models.Model):
@@ -52,6 +55,9 @@ class Check(models.Model):
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
+    cron_kind= models.CharField(max_length=100, choices=CRON_KIND, default="simple")
+    cron_schedule = models.CharField(max_length=100, default= "* * * * *")
+
 
     def name_then_code(self):
         if self.name:
@@ -109,7 +115,7 @@ class Check(models.Model):
 
     def to_dict(self):
         pause_rel_url = reverse("hc-api-pause", args=[self.code])
-
+        it = croniter(self.cron_schedule, datetime.utcnow())
         result = {
             "name": self.name,
             "ping_url": self.url(),
@@ -118,8 +124,14 @@ class Check(models.Model):
             "timeout": int(self.timeout.total_seconds()),
             "grace": int(self.grace.total_seconds()),
             "n_pings": self.n_pings,
-            "status": self.get_status()
+            "status": self.get_status(),
+            "expected_pings": [it.get_next(datetime).strftime("%A %d, %B %Y %I:%M%p") for i in range(0,5)]
         }
+
+        if self.cron_kind == "simple":
+            result["timeout"] = self.timeout
+        elif self.cron_kind == "advanced":
+            result["cron_schedule"] = self.cron_schedule
 
         if self.last_ping:
             result["last_ping"] = self.last_ping.isoformat()
