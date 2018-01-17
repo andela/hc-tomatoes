@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to the HealthChecks Blog{% endblock %}
+
+{% block content %}
+    <h1>Welcome to the HealthChecks Blog</h1>
+    <div style="margin-bottom:2%;">
+        <h2>Posts</h2>
+        <a class="btn btn-primary" href="{% url 'create_blog_post' %}">Create a New Blog Post</a>    
+        
+        {% if posts %}
+            <ul class="posts" 
+                style=
+                    "list-style:none;
+                    -moz-column-count: 2;
+                    -moz-column-gap: 20px;
+                    -webkit-column-count: 2;
+                    -webkit-column-gap: 20px;
+                    column-count: 4;
+                    column-gap: 20px;"
+            >
+            {% for post in posts %}
+                <li 
+                    style="
+                        margin:3%;
+                        font-size:105%;"
+                >
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}<br />
+                        Comments: <span class=badge>{{ post.comments.count }}</span></a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>There are no posts.</p>
+        {% endif %}
+    </div>
+    <div>
+        <h2>Categories</h2>    
+        {% if categories %}
+            <ul 
+                style="
+                        list-style:none; 
+                        margin:1%;
+                        padding: 1%; 
+                        padding-left: 0; 
+                        margin-left:0;"
+            >
+            {% for category in categories %}
+                <li style="display:inline; margin: 0.5%;">
+                        <a href="{{ category.get_absolute_url }}">
+                            <span class=badge>{{ category.title }} </span>
+                            <span class="badge">{{ categories.count }}</span>
+                        </a>
+                </li>
+            {% endfor %}
+            </ul>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCategory">
+                Add a New Category
+            </button>
+            <div class="modal" tabindex="-1" role="dialog" id="newCategory">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title">Create a new Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action=".">
+                            {% csrf_token %}
+                            {{form}}
+                            <button type="submit" class="btn btn-primary">Add Category</button>
+                        </form>              
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        {% else %}
+            <p>There are no posts.</p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+
+{% extends 'base.html' %} 
+{% block head_title %}{{ post.title }}{% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>    
+    <h4>By {{ post.author }}</h4>
+    <h4>{{ post.publish }}</h4>
+    <div 
+        style=
+            "font-size:115%;"
+    >
+        {{ post.body }}
+    </div>
+
+    <hr />
+
+    {% for comment in post.comments.all %}
+        <p>Comments<span class="badge">{{ comments.count }}</span></p>
+        <div class="comment">
+            <div class="date">{{ comment.created_date }}</div>
+            <strong>{{ comment.author }}</strong>
+            <p>{{ comment.text|linebreaks }}</p>
+        </div>   
+    {% empty %}
+        <p>No comments here yet :(</p>
+    {% endfor %}
+    <div>
+        <form method="POST"  action="">
+            {% csrf_token %}
+            {{form.text}}
+            <p><button class="btn btn-primary" type="submit">Comment</button></p>
+        </form>
+    </div>
+{% endblock %}
