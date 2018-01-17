@@ -31,6 +31,7 @@
             {% if ch.kind == "webhook" %} Webhook {% endif %}
             {% if ch.kind == "slack" %} Slack {% endif %}
             {% if ch.kind == "hipchat" %} HipChat {% endif %}
+            {% if ch.kind == "africastalking" %} AfricasTalking {% endif %}
             {% if ch.kind == "pd" %} PagerDuty {% endif %}
             {% if ch.kind == "po" %} Pushover {% endif %}
             {% if ch.kind == "victorops" %} VictorOps {% endif %}
@@ -127,6 +128,14 @@
     <h1 class="ai-title">Add More</h1>
     <ul class="add-integration">
         <li>
+            <img src="{% static 'img/integrations/at.jpg' %}"
+                class="icon" alt="Slack icon" />
+
+            <h2>AfricasTalking</h2>
+            <p>A messaging app for SMS alerts.</p>
+            <a href="{% url 'hc-add-africastalking' %}" class="btn btn-primary">Add Integration</a>
+        </li>
+         <li>
             <img src="{% static 'img/integrations/slack.png' %}"
                 class="icon" alt="Slack icon" />
 

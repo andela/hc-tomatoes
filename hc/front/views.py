@@ -337,6 +337,7 @@ def do_add_channel(request, data):
 
         return redirect("hc-channels")
     else:
+        print(form.errors)
         return HttpResponseBadRequest()
 
 
@@ -395,6 +396,12 @@ def remove_channel(request, code):
 def add_email(request):
     ctx = {"page": "channels"}
     return render(request, "integrations/add_email.html", ctx)
+
+
+@login_required
+def add_africastalking(request):
+    ctx = {"page": "channels"}
+    return render(request, "integrations/add_africastalking.html", ctx)
 
 
 @login_required

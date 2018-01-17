@@ -166,6 +166,8 @@ class ChannelsAdmin(admin.ModelAdmin):
             return "Webhook"
         elif obj.kind == "slack":
             return "Slack"
+        elif obj.kind == "africastalking":
+            return "AfricasTalking"
         elif obj.kind == "hipchat":
             return "HipChat"
         elif obj.kind == "email" and obj.email_verified:

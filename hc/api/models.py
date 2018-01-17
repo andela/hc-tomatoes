@@ -26,7 +26,7 @@ DEFAULT_GRACE = td(hours=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
-                 ("victorops", "VictorOps"))
+                 ("victorops", "VictorOps"),("africastalking", "AfricasTalking"))
 
 PO_PRIORITIES = {
     -2: "lowest",
@@ -159,6 +159,8 @@ class Channel(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     kind = models.CharField(max_length=20, choices=CHANNEL_KINDS)
     value = models.TextField(blank=True)
+    apikey = models.CharField(max_length=90, null=True, blank=True)
+    username = models.CharField(max_length=50, null=True, blank=True)
     email_verified = models.BooleanField(default=False)
     checks = models.ManyToManyField(Check)
 
@@ -193,6 +195,8 @@ class Channel(models.Model):
             return transports.VictorOps(self)
         elif self.kind == "pushbullet":
             return transports.Pushbullet(self)
+        elif self.kind == "africastalking":
+            return transports.AfricasTalking(self)
         elif self.kind == "po":
             return transports.Pushover(self)
         else:
