@@ -83,6 +83,10 @@
                     <li {% if page == 'channels' %} class="active" {% endif %}>
                         <a href="{% url 'hc-channels' %}">Integrations</a>
                     </li>
+                    
+                    <li {% if page == 'blog' %} class="active" {% endif %}>
+                            <a href="{% url 'home' %}">HealthChecks Blog</a>
+                    </li>
 
                 {% endif %}
 

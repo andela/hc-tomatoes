@@ -1,0 +1,29 @@
+{% extends 'base.html' %} 
+{% block head_title %}Viewing category {{ category.title }}{% endblock %}
+{% block title %}{{ category.title }}{% endblock %}
+
+{% block content %}
+<style>
+    ul.posts li{
+        font-size : 120%;
+    }
+</style>
+    {% if posts %}
+        <ul class="posts"
+            style=
+                "list-style:none;
+                -moz-column-count: 2;
+                -moz-column-gap: 20px;
+                -webkit-column-count: 2;
+                -webkit-column-gap: 20px;
+                column-count: 4;
+                column-gap: 20px;"
+        >
+        {% for post in posts %}
+            <li ><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no posts.</p>
+    {% endif %}
+{% endblock %}
