@@ -5,7 +5,7 @@ chardet==3.0.4
 croniter==0.3.20
 cssselect==1.0.1
 cssutils==1.0.2
-Django==1.10
+Django==2.2.24
 django-appconf==1.0.1
 django-compressor==2.1
 django-ses-backend==0.1.1
